@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+     <record id="weha_hr_schedule_exception_wizard" model="ir.ui.view">
+        <field name="name">weha.hr.schedule.exception.wizard</field>
+        <field name="model">weha.wizard.hr.schedule.exception</field>
+        <field name="arch" type="xml">
+            <form string="Import Voucher Lines">
+                <group>
+                    <field name="exception_description"/>
+                </group>
+                <footer>
+                    <button name="process" string="Request" type="object" class="btn-primary"/>
+                    or
+                    <button name="cancel" string="Cancel" class="oe_link"  special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_weha_hr_schedule_exception_wizard" model="ir.actions.act_window">
+        <field name="name">Schedule Exception</field>
+        <field name="res_model">weha.wizard.hr.schedule.exception</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+
+    <record id="weha_hr_schedule_exception_approval_wizard" model="ir.ui.view">
+        <field name="name">weha.hr.schedule.exception.approval.wizard</field>
+        <field name="model">weha.wizard.hr.schedule.exception.approval</field>
+        <field name="arch" type="xml">
+            <form string="Schedule Exception Approval">
+                <group>
+                    <field name="approved_state" widget="radio"/>
+                    <field name="approved_reason" attrs="{'invisible':[('approved_state','=','approve')]}"/>
+                </group>
+                <footer>
+                    <button name="process" string="Process" type="object" class="btn-primary"/>
+                    or
+                    <button name="cancel" string="Cancel" class="oe_link"  special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_weha_hr_schedule_exception_approval_wizard" model="ir.actions.act_window">
+        <field name="name">Schedule Exception Approval</field>
+        <field name="res_model">weha.wizard.hr.schedule.exception.approval</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+
+  </data>
+</odoo>

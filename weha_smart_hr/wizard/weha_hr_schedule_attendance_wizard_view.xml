@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+     <record id="weha_hr_schedule_attendance_wizard" model="ir.ui.view">
+        <field name="name">weha.hr.schedule.attendance.wizard</field>
+        <field name="model">weha.wizard.hr.schedule.attendance</field>
+        <field name="arch" type="xml">
+            <form string="Process Schedule Attendance">
+                <group>
+                    <field name="day" required="1"/>
+                </group>
+                <footer>
+                    <button name="process" string="Process" type="object" class="btn-primary"/>
+                    or
+                    <button name="cancel" string="Cancel" class="oe_link"  special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_weha_hr_schedule_attendance_wizard" model="ir.actions.act_window">
+        <field name="name">Schedule Attendance</field>
+        <field name="res_model">weha.wizard.hr.schedule.attendance</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+
+    <menuitem 
+        id="weha_hr_schedule_attendance_menu" 
+        name="Process Schedule Attendance" 
+        parent="menu_hr_schedule"
+        action="action_weha_hr_schedule_attendance_wizard" 
+        sequence="9"
+        groups="hr.group_hr_manager"/>
+        
+  </data>
+</odoo>

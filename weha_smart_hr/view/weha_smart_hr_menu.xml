@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <menuitem
+        id="menu_hr_schedule"
+        name="Schedules"
+        sequence="94"
+        groups="base.group_user"/>
+
+    <menuitem
+        id="menu_hr_configuration"
+        name="Configuration"
+        parent="menu_hr_schedule"
+        sequence="10"
+        groups="base.group_user"/>
+
+    
+
+</odoo>

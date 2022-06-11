@@ -1,0 +1,410 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <!-- <template id="weha_smart_hr_portal_assets" inherit_id="portal.assets_frontend">
+        <xpath expr="." position="inside">
+            <script type="text/javascript" src="/weha_helpdesk_mgmt/static/src/js/portal.js" />
+            <link rel="stylesheet" href="/weha_helpdesk_mgmt/static/src/css/bootstrap-multiselect.min.css" type="text/css"/>
+            <script type="text/javascript" src="/weha_helpdesk_mgmt/static/src/js/bootstrap-multiselect.min.js"></script>
+        </xpath>
+    </template> -->
+    
+    <template id="portal_my_home_menu_attendance" name="Portal layout : attendance menu entries" inherit_id="portal.portal_breadcrumbs" priority="30">
+        <xpath expr="//ol[hasclass('o_portal_submenu')]" position="inside">
+            <li t-if="page_name == 'attendance' or attendance" t-attf-class="breadcrumb-item #{'active ' if not attendance else ''}">
+                <a t-if="ticket" t-attf-href="/my/attendances?{{ keep_query() }}">Attendances</a>
+                <t t-else="">Attendances</t>
+            </li>
+            <li t-if="attendance" class="breadcrumb-item active">
+                <t t-esc="attendance.name" t-if="attendance.name" />
+                <t t-else="">
+                    <em>Ticket</em>
+                </t>
+            </li>
+        </xpath>
+    </template>
+
+    <template id="portal_my_home_attendance" name="Portal My Home : attendance entries" inherit_id="portal.portal_my_home" priority="30">
+        <xpath expr="//div[hasclass('o_portal_docs')]" position="inside">
+            <t t-call="portal.portal_docs_entry">
+                <t t-set="title">Attendances</t>
+                <t t-set="url" t-value="'/my/attendances'" />
+                <t t-set="count" t-value="attendance_count" />
+            </t>
+        </xpath>
+    </template>
+
+    <template id="portal_my_attendances name="My Attendances">
+        <t t-call="portal.portal_layout">
+            <t t-set="breadcrumbs_searchbar" t-value="True" />
+            <t t-if="not attendances">
+                <p>There are currently no attendances for your account.</p>
+            </t>
+        </t>
+    </template>
+
+    <template id="portal_attendance_page" name="Attendance Portal Template" inherit_id="portal.portal_sidebar" primary="True">
+        <xpath expr="//div[hasclass('o_portal_sidebar')]" position="inside">
+            <t t-if="message">
+                <div class="alert alert-warning mt16" role="alert">
+                    <t t-esc="message"/>
+                </div>
+            </t>
+            <div class="row mt16 o_portal_ticket_sidebar">
+                <!-- Sidebar -->
+                <t t-call="portal.portal_record_sidebar">
+                    <t t-set="classes" t-value="'col-12 col-lg flex-lg-grow-0 d-print-none'" />
+                    <t t-set="title">
+                        <h2 class="mb-0">
+                            <b t-if="ticket" t-field="ticket.name" />
+                            <b t-else="Ticket" t-field="ticket.name" />
+                        </h2>
+                    </t>
+
+                    <t t-set="entries">
+                        <ul class="list-group list-group-flush flex-wrap flex-row flex-lg-column">
+                        </ul>
+                    </t>
+                </t>
+
+                <!-- Page Content -->
+                <div id="attendance_content" class="col-12 col-lg justify-content-end">
+                    <div t-attf-class="card #{'pb-5' if report_type == 'html' else ''}">
+                        <div t-call="weha_smart_hr.weha_smart_hr_portal_content" />
+                    </div>
+
+                    <!-- chatter -->
+                    <div id="ticket_communication" class="mt-4">
+                        <h2>History</h2>
+                        <t t-call="portal.message_thread">
+                            <t t-set="object" t-value="ticket" />
+                        </t>
+                    </div>
+                </div>
+            </div>
+          
+        </xpath>
+    </template>
+    <template id="weha_smart_hr_portal_content" name="Attendance Portal Content">
+        <!-- Intro -->
+
+        <div id="introduction" t-attf-class="pb-2 pt-3 #{'card-header bg-white' if report_type == 'html' else ''}">
+            <h2 class="my-0">
+                <strong>
+                    <em t-esc="ticket.name" />
+                </strong>
+            </h2>
+        </div>
+        <div t-attf-class="#{'card-body' if report_type == 'html' else ''}">
+            <div id="informations">
+                <div class="row">
+                    <!-- <div class="mb-3 col-6">
+                        <div class="row">
+                            <div class="col-6">
+                                <strong>Ticket Type</strong>
+                            </div>
+                            <div class="col-6">
+                                <span t-field="ticket.ticket_type" />
+                            </div>
+                        </div>
+                    </div> -->
+                    <div class="mb-3 col-md-6 col-xs-12">
+                        <div class="row">
+                            <div class="col-6">
+                                <strong>Create Date</strong>
+                            </div>
+                            <div class="col-6">
+                                <span t-field="ticket.create_date" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mb-3 col-md-6 col-xs-12">
+                        <div class="row">
+                            <div class="col-6">
+                                <strong>Last Update Date</strong>
+                            </div>
+                            <div class="col-6">
+                                <span t-field="ticket.write_date" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    
+                    <div class="mb-3 col-md-6 col-xs-12">
+                        <div class="row">
+                            <div class="col-6">
+                                <strong>Person Name</strong>
+                            </div>
+                            <div class="col-6">
+                                <span t-field="ticket.person_name" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mb-3 col-md-6 col-xs-12">
+                        <div class="row">
+                            <div class="col-6">
+                                <strong>Email</strong>
+                            </div>
+                            <div class="col-6">
+                                <span t-field="ticket.email" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- <div class="row">
+                    <div class="mb-3 col-6">
+                        <div class="row">
+                            <div class="col-6">
+                                <strong>Ticket Subject Type</strong>
+                            </div>
+                            <div class="col-6">
+                                <span t-field="ticket.subject_id" />
+                            </div>
+                        </div>
+                    </div>
+                    
+                </div> -->
+                <t t-if="request.env.company.category and not request.env.company.sub_category">
+                    <div class="row">
+                        <div class="mb-3 col-md-6 col-xs-12">
+                            <div class="row">
+                                <div class="col-6">
+                                    <strong>Category</strong>
+                                </div>
+                                <div class="col-6">
+                                    <span t-field="ticket.category_id" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </t>
+                <t t-if="not request.env.company.category and request.env.company.sub_category">
+                    <div class="row">
+                        <div class="mb-3 col-md-6 col-xs-12">
+                            <div class="row">
+                                <div class="col-6">
+                                    <strong>Sub Category</strong>
+                                </div>
+                                <div class="col-6">
+                                    <span t-field="ticket.sub_category_id" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </t>
+                <t t-if="request.env.company.category and request.env.company.sub_category">
+                    <div class="row">
+                        <div class="mb-3 col-md-6 col-xs-12">
+                            <div class="row">
+                                <div class="col-6">
+                                    <strong>Category</strong>
+                                </div>
+                                <div class="col-6">
+                                    <span t-field="ticket.category_id" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mb-3 col-md-6 col-xs-12">
+                            <div class="row">
+                                <div class="col-6">
+                                    <strong>Sub Category</strong>
+                                </div>
+                                <div class="col-6">
+                                    <span t-field="ticket.sub_category_id" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </t>
+
+                <div class="row">
+                    <div class="mb-3 col-md-6 col-xs-12">
+                        <div class="row">
+                            <div class="col-6">
+                                <strong>Equipment</strong>
+                            </div>
+                            <t t-if="ticket.is_equipment_exist">
+                                <div class="col-6">
+                                    <span t-field="ticket.maintenance_equipment_id" />
+                                </div>
+                            </t>
+                            <t t-if="not ticket.is_equipment_exist">
+                                <div class="col-6">
+                                    <span t-field="ticket.maintenance_equipment_str" />
+                                </div>
+                            </t>
+                        </div>
+                    </div>
+                    <div class="mb-3 col-md-6 col-xs-12">
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="mb-3 col-md-6 col-xs-12">
+                        <div class="row">
+                            <div class="col-6">
+                                <strong>Replied Date</strong>
+                            </div>
+                            <div class="col-6">
+                                <span t-field="ticket.replied_date" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mb-3 col-md-6 col-xs-12">
+                        <div class="row">
+                            <div class="col-6">
+                                <strong>Closed Date</strong>
+                            </div>
+                            <div class="col-6">
+                                <span t-field="ticket.close_date" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="mb-3 col-md-6 col-xs-12">
+                        <div class="row">
+                            <div class="col-6">
+                                <strong>Priority</strong>
+                            </div>
+                            <div class="col-6">
+                                <span t-field="ticket.priority" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mb-3 col-md-6 col-xs-12">
+                        <div class="row">
+                            <div class="col-6">
+                                <strong>Closed By</strong>
+                            </div>
+                            <div class="col-6">
+                                <span t-field="ticket.close_by" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="mb-3 col-md-6 col-xs-12">
+                        <div class="row">
+                            <div class="col-6">
+                                <strong>Cancelled Date</strong>
+                            </div>
+                            <div class="col-6">
+                                <span t-field="ticket.cancel_date" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mb-3 col-md-6 col-xs-12">
+                        <div class="row">
+                            <div class="col-6">
+                                <strong>Cancelled By</strong>
+                            </div>
+                            <div class="col-6">
+                                <span t-field="ticket.cancel_by" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="mb-3 col-md-6 col-xs-12">
+                        <div class="row">
+                            <div class="col-6">
+                                <strong>Status</strong>
+                            </div>
+                            <div class="col-6">
+                                <span t-field="ticket.stage_id" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mb-3 col-md-6 col-xs-12">
+                        <div class="row">
+                            <div class="col-6">
+                                <strong>Cancelled Reason</strong>
+                            </div>
+                            <div class="col-6">
+                                <span t-field="ticket.cancel_reason" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <t t-if="ticket.comment">
+                    <div class="row">
+                        <div class="mb-3 col-md-12 col-xs-12">
+                            <strong>Closed Comment</strong>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="mb-3 col-md-12 col-xs-12">
+                            <span t-field="ticket.comment" />
+                        </div>
+                    </div>
+                </t>
+                <t t-if="ticket.email_subject">
+                    <div class="row">
+                        <div class="mb-3 col-md-12 col-xs-12">
+                            <strong>Subject</strong>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="mb-3 col-md-12 col-xs-12">
+                            <span t-field="ticket.email_subject" />
+                        </div>
+                    </div>
+                </t>
+                <t t-if="ticket.description">
+                    <div class="row">
+                        <div class="mb-3 col-md-12 col-xs-12">
+                            <strong>Description</strong>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="mb-3 col-md-12 col-xs-12">
+                            <span t-field="ticket.description" />
+                        </div>
+                    </div>
+                </t>
+                <div class="row">
+                    <div class="mb-3 col-md-12 col-xs-12">
+                        <strong>Attachments</strong>
+                    </div>
+                </div>
+                <div class="row">
+                        <div class="mb-3 col-md-12 col-xs-12">
+                            <t t-foreach="ticket.attachment_ids" t-as="attachment">
+                                <a t-attf-href="/web/content/#{attachment.id}?download=true&amp;access_token=#{attachment.access_token}">
+                                <span t-esc="attachment.name" class="fa fa-download"/></a>
+                            </t>
+                        </div>
+                    </div>
+                <t t-if="ticket.priority_new and ticket.customer_comment">
+                    <div class="row">
+                        <div class="mb-3 col-md-6 col-xs-12">
+                            <div class="row">
+                                <div class="col-6">
+                                    <strong>Customer Rating</strong>
+                                </div>
+                                <div class="col-6">
+                                    <span class="float-right" title="Rating" role="img" t-attf-aria-label="Rating: #{ticket.priority_new} on 3">
+                                        <t t-foreach="range(2, 7)" t-as="i">
+                                            <span t-attf-class="fa fa-lg fa-star#{'' if i &lt;= int(ticket.priority_new) else '-o'}" />
+                                        </t>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mb-3 col-md-6 col-xs-12">
+                            <div class="row">
+                                <div class="col-6">
+                                    <strong>Customer Comment</strong>
+                                </div>
+                                <div class="col-6">
+                                    <span t-field="ticket.customer_comment" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </t>
+            </div>
+        </div>
+    </template>
+</odoo>

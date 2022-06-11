@@ -1,0 +1,239 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="view_weha_hr_schedule_template_tree" model="ir.ui.view">
+            <field name="name">weha.hr.schedule.template.tree</field>
+            <field name="model">weha.hr.schedule.template</field>
+            <field name="arch" type="xml">
+                <tree string="Schedule Template">
+                    <field name="name"/>
+                    <field name="code"/>
+                    <field name="time_start" widget="float_time"/>
+                    <field name="time_end" widget="float_time"/>
+                    <field name="hours"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="view_weha_hr_schedule_template_form" model="ir.ui.view">
+            <field name="name">weha.hr.schedule.template.form</field>
+            <field name="model">weha.hr.schedule.template</field>
+            <field name="arch" type="xml">
+                <form string="Schedule Template">
+                    <sheet>
+                        <div name="button_box" class="oe_button_box">
+                        </div>
+                        <div class="oe_title">
+                            <label for="name" class="oe_edit_only" />
+                            <h1>
+                                <field name="name" class="oe_inline"
+                                    placeholder="Name" />
+                            </h1>
+                        </div>
+                        <group>
+                            <group>
+                                <field name="code"/>
+                            </group>
+                            <group>
+                                <field name="time_start" widget="float_time"/>
+                                <field name="time_end" widget="float_time"/>
+                                <field name="hours"/>
+                            </group>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="view_weha_hr_schedule_template_filter" model="ir.ui.view">
+            <field name="name">weha.hr.schedule.template.search</field>
+            <field name="model">weha.hr.schedule.template</field>
+            <field name="arch" type="xml">
+                <search string="Schedule Template">
+                    <field name="name" string="Template"/>
+                    <field name="code" string="Code"/>
+                </search>
+             </field>
+        </record>
+
+        <record id="act_weha_hr_schedule_template" model="ir.actions.act_window">
+            <field name="name">Schedule Template</field>
+            <field name="res_model">weha.hr.schedule.template</field>
+            <field name="view_mode">tree,form</field>
+            <field name="search_view_id" ref="view_weha_hr_schedule_template_filter"/>
+            <field name="context">{}</field>
+            <field name="help" type="html">
+              <p class="o_view_nocontent_smiling_face">
+                Add a new schedule template
+              </p>
+              <p>
+                With just a quick glance on the Odoo schedule template screen, you
+                can easily find all the information you need for each schedule template
+              </p>
+            </field>
+        </record>
+
+        <menuitem
+                id="menu_hr_schedule_template"
+                name="Template"
+                action="act_weha_hr_schedule_template"
+                parent="menu_hr_configuration"
+                sequence="1"/>
+
+        
+        <record id="view_weha_hr_schedule_tree" model="ir.ui.view">
+            <field name="name">weha.hr.schedule.tree</field>
+            <field name="model">weha.hr.schedule</field>
+            <field name="arch" type="xml">
+                <tree string="Schedule">
+                    <field name="day"/>
+                    <field name="employee_id"/>
+                    <field name="department_id"/>
+                    <field name="date_time_start"/>
+                    <field name="date_time_end"/>
+                    <field name="state"/>
+                </tree>
+            </field>
+        </record>    
+    
+    
+        <record id="view_weha_hr_schedule_form" model="ir.ui.view">
+            <field name="name">weha.hr.schedule.form</field>
+            <field name="model">weha.hr.schedule</field>
+            <field name="arch" type="xml">
+                <form string="Schedule">
+                    <header>
+                        <button type="object" name="action_check_attendance" string="Attendance" states="draft,exception,validate" class="btn-warning"/>
+                        <button type="action" name="%(action_weha_hr_schedule_exception_wizard)d" string="Exception" states="exception" class="btn-warning"/>
+                        <button type="action" name="%(action_weha_hr_schedule_exception_approval_wizard)d" states="request" string="Approval" class="btn-warning"/>
+                        <field name="state" widget="statusbar" statusbar_visible="draft,validate,locked"/>
+                    </header>
+                    <sheet>
+                        <div name="button_box" class="oe_button_box">
+                        </div>
+                        <div class="oe_title">
+                            <label for="employee_id" class="oe_edit_only" />
+                            <h1>
+                                <field name="employee_id" class="oe_inline"
+                                    placeholder="employee_id" />
+                            </h1>
+                        </div>
+                        <group>
+                            <group string="Information">
+                                <field name="day"/>
+                                <field name="company_id"/>
+                                <field name="department_id"/>
+                            </group>
+                            <group string="Schedule">
+                                <field name="schedule_template_id"/>
+                                <field name="date_time_start" force_save="1"/>
+                                <field name="date_time_end" force_save="1"/>
+                            </group>
+                        </group>
+                        <group>
+                            <group String="Actual">
+                                <field name="hr_attendance_id"/>
+                                <field name="actual_check_in"/>
+                                <field name="actual_check_out"/>
+                            </group>
+                            <group string="Exception">
+                                <field name="exception_ids" widget="many2many_tags"/>
+                                <field name="exception_description"/>
+                                <field name="approved_datetime"/>
+                                <field name="approved_state"/>
+                                <field name="approved_by"/>
+                                <field name="approved_reason" attrs="{'invisible':[('approved_state','=','approve')] }"/>
+                            </group>
+                        </group>
+                    </sheet>
+                    <div class="oe_chatter">
+                        <field name="message_follower_ids" widget="mail_followers" />
+                        <field name="message_ids" widget="mail_thread" />
+                        <field name="activity_ids" widget="mail_activity" />
+                    </div>
+                </form>
+            </field>
+        </record>
+
+        <record id="view_weha_hr_schedule_filter" model="ir.ui.view">
+            <field name="name">weha.hr.schedule.search</field>
+            <field name="model">weha.hr.schedule</field>
+            <field name="arch" type="xml">
+                <search string="Schedule">
+                    <field name="day" string="Day"/>
+                    <field name="employee_id" string="Employee"/>
+                    <field name="department_id" string="Department"/>
+                </search>
+             </field>
+        </record>
+
+        <record id="act_weha_hr_schedule" model="ir.actions.act_window">
+            <field name="name">Schedule</field>
+            <field name="res_model">weha.hr.schedule</field>
+            <field name="view_mode">tree,form</field>
+            <field name="search_view_id" ref="view_weha_hr_schedule_filter"/>
+            <field name="context">{}</field>
+            <field name="help" type="html">
+              <p class="o_view_nocontent_smiling_face">
+                Add a new schedule
+              </p>
+              <p>
+                With just a quick glance on the Odoo schedule template screen, you
+                can easily find all the information you need for each schedule
+              </p>
+            </field>
+        </record>
+        
+        <menuitem
+                id="menu_hr_employee_schedule"
+                name="Employee Schedule"
+                action="act_weha_hr_schedule"
+                parent="menu_hr_schedule"
+                sequence="2"/>
+
+        <record id="view_weha_hr_schedule_my_dashboard" model="ir.ui.view">   
+            <field name="name">weha.hr.schedule.my.dashboard</field>   
+            <field name="model">weha.hr.schedule</field>   
+            <field name="arch" type="xml">       
+                <calendar string="My Schedule"                 
+                        date_start="date_time_start"        
+                        date_stop="date_time_end"    
+                        mode="month"      
+                        color="color"                          
+                        quick_add="False"> 
+                    <field name="color"/>
+                    <field name="date_time_start"/>
+                    <field name="date_time_end"/>
+                    <field name="day"/>          
+                    <field name="schedule_template_id"/>          
+                    <field name="employee_id"/>     
+                </calendar>   
+            </field>
+        </record>
+
+        <record id="act_weha_hr_schedule_my_dashboard" model="ir.actions.act_window">
+            <field name="name">My Schedule</field>
+            <field name="res_model">weha.hr.schedule</field>
+            <field name="view_mode">calendar</field>
+            <field name="domain">[('employee_id.user_id', '=', uid)]</field>
+            <field name="context">{}</field>
+            <field name="help" type="html">
+              <p class="o_view_nocontent_smiling_face">
+                Add a new schedule
+              </p>
+              <p>
+                With just a quick glance on the Odoo schedule template screen, you
+                can easily find all the information you need for each schedule
+              </p>
+            </field>
+        </record>
+
+        <menuitem
+                id="menu_hr_employee_my_dashboard"
+                name="My Schedule"
+                action="act_weha_hr_schedule_my_dashboard"
+                parent="menu_hr_schedule"
+                sequence="1"
+                groups="base.group_user"/>
+    </data>
+</odoo>
